@@ -35,14 +35,14 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
         str1 = val1.str_value;
         str2 = val2.str_value;
     } else if (do_lint) {
-        lintwarn(ext_id, "edlib_hw: called with innapropriate arguments");
+        fatal(ext_id, "edlib: called with innapropriate values for alignment");
     }
 
     if (nargs > 2) {
         if (get_argument(2, AWK_STRING, &mode_val)) {
             mode_str = mode_val.str_value.str;
         } else {
-            lintwarn(ext_id, "edlib: supplied mode is not a string, defaulting to \"NW\"");
+            nonfatal(ext_id, "edlib: supplied mode is not a string, defaulting to \"NW\"");
         }
 
         if (!strcmp(mode_str, "NW")) {
@@ -52,7 +52,7 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
         } else if (!strcmp(mode_str, "HW")) {
             mode = EDLIB_MODE_HW;
         } else {
-            lintwarn(ext_id, "edlib: supplied mode is invalid, defaulting to \"NW\"");
+            fatal(ext_id, "edlib: supplied mode is invalid, defaulting to \"NW\"");
         }
     } else {
         mode = EDLIB_MODE_NW;
@@ -63,7 +63,7 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
             max_dist_val.num_type == AWK_NUMBER_TYPE_DOUBLE) {
             max_dist = max_dist_val.num_value;
         } else {
-            lintwarn(ext_id, "edlib: supplied maximum distance is not a simple number, defaulting to unlimited (-1)");
+            nonfatal(ext_id, "edlib: supplied maximum distance is not a simple number, defaulting to unlimited (-1)");
         }
     }
 
@@ -72,6 +72,10 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
 
     EdlibAlignResult alignResult =
         edlibAlign(str1.str, str1.len, str2.str, str2.len, config);
+
+    if (alignResult.status != EDLIB_STATUS_OK) {
+        fatal(ext_id, "edlib: an unknown error occured during alignment");
+    }
 
     char *cigar =
         edlibAlignmentToCigar(alignResult.alignment, alignResult.alignmentLength, EDLIB_CIGAR_STANDARD);
