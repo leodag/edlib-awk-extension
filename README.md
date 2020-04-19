@@ -4,11 +4,12 @@ A GNU awk extension to use the edlib library.
 
 ## Building
 
-This project uses CMake to build itself. Run the following commands at the project's root to install:
+This project uses CMake to build itself. Run the following commands at the project's root to build:
 
-1. `mkdir build && cd build`
-2. `cmake -D CMAKE_BUILD_TYPE=Release ..`
-3. `make`
+1. `git submodule init && git submodule update` - this will download `edlib`'s repository into the vendor/edlib directory
+2. `mkdir build && cd build`
+3. `cmake -D CMAKE_BUILD_TYPE=Release ..`
+4. `make`
 
 This will create a `edlib.so` in the `build` directory.
 
