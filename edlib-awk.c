@@ -45,11 +45,11 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
             fatal(ext_id, "edlib: supplied mode is not a string");
         }
 
-        if (!strcmp(mode_str, "NW")) {
+        if (strcmp(mode_str, "NW") == 0) {
             mode = EDLIB_MODE_NW;
-        } else if (!strcmp(mode_str, "SHW")) {
+        } else if (strcmp(mode_str, "SHW") == 0) {
             mode = EDLIB_MODE_SHW;
-        } else if (!strcmp(mode_str, "HW")) {
+        } else if (strcmp(mode_str, "HW") == 0) {
             mode = EDLIB_MODE_HW;
         } else {
             fatal(ext_id, "edlib: supplied alignment mode is invalid");
