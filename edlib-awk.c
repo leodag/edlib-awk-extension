@@ -42,7 +42,7 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
         if (get_argument(2, AWK_STRING, &mode_val)) {
             mode_str = mode_val.str_value.str;
         } else {
-            nonfatal(ext_id, "edlib: supplied mode is not a string, defaulting to \"NW\"");
+            fatal(ext_id, "edlib: supplied mode is not a string");
         }
 
         if (!strcmp(mode_str, "NW")) {
@@ -52,7 +52,7 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
         } else if (!strcmp(mode_str, "HW")) {
             mode = EDLIB_MODE_HW;
         } else {
-            fatal(ext_id, "edlib: supplied mode is invalid, defaulting to \"NW\"");
+            fatal(ext_id, "edlib: supplied alignment mode is invalid");
         }
     } else {
         mode = EDLIB_MODE_NW;
@@ -63,7 +63,7 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
             max_dist_val.num_type == AWK_NUMBER_TYPE_DOUBLE) {
             max_dist = max_dist_val.num_value;
         } else {
-            nonfatal(ext_id, "edlib: supplied maximum distance is not a simple number, defaulting to unlimited (-1)");
+            fatal(ext_id, "edlib: supplied maximum distance is not a simple number");
         }
     }
 
