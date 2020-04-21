@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <gawkapi.h>
+#include "gawkapi.h"
 #include "edlib.h"
 
 int plugin_is_GPL_compatible;
