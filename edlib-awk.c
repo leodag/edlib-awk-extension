@@ -27,6 +27,10 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
     char *mode_str;
     EdlibAlignMode mode = EDLIB_MODE_NW;
 
+    awk_value_t cigar_val;
+    char *cigar_str;
+    EdlibCigarFormat cigar = EDLIB_CIGAR_EXTENDED;
+
     awk_value_t max_dist_val;
     int max_dist = -1;
 
@@ -59,7 +63,25 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
     }
 
     if (nargs > 3) {
-        if (get_argument(3, AWK_NUMBER, &max_dist_val) &&
+        if (get_argument(3, AWK_STRING, &cigar_val)) {
+            cigar_str = cigar_val.str_value.str;
+        } else {
+            fatal(ext_id, "edlib: supplied cigar mode is not a string");
+        }
+
+        if (strcmp(cigar_str, "STANDARD") == 0) {
+            cigar = EDLIB_CIGAR_STANDARD;
+        } else if (strcmp(cigar_str, "EXTENDED") == 0) {
+            cigar = EDLIB_CIGAR_EXTENDED;
+        } else {
+            fatal(ext_id, "edlib: supplied cigar mode is invalid");
+        }
+    } else {
+        cigar = EDLIB_CIGAR_EXTENDED;
+    }
+
+    if (nargs > 4) {
+        if (get_argument(4, AWK_NUMBER, &max_dist_val) &&
             max_dist_val.num_type == AWK_NUMBER_TYPE_DOUBLE) {
             max_dist = max_dist_val.num_value;
         } else {
@@ -70,25 +92,25 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *result, struct awk_ext_func
     EdlibAlignConfig config =
         edlibNewAlignConfig(max_dist, mode, EDLIB_TASK_PATH, NULL, 0);
 
-    EdlibAlignResult alignResult =
+    EdlibAlignResult align_result =
         edlibAlign(str1.str, str1.len, str2.str, str2.len, config);
 
-    if (alignResult.status != EDLIB_STATUS_OK) {
+    if (align_result.status != EDLIB_STATUS_OK) {
         fatal(ext_id, "edlib: an unknown error occured during alignment");
     }
 
-    char *cigar =
-        edlibAlignmentToCigar(alignResult.alignment, alignResult.alignmentLength, EDLIB_CIGAR_STANDARD);
+    char *cigar_result =
+        edlibAlignmentToCigar(align_result.alignment, align_result.alignmentLength, cigar);
 
-    make_malloced_string(cigar, strlen(cigar), result);
+    make_malloced_string(cigar_result, strlen(cigar_result), result);
 
-    edlibFreeAlignResult(alignResult);
+    edlibFreeAlignResult(align_result);
 
     return result;
 }
 
 static awk_ext_func_t func_table[] = {
-    { "edlib", do_edlib, 4, 2, awk_false, NULL },
+    { "edlib", do_edlib, 5, 2, awk_false, NULL },
 };
 
 dl_load_func(func_table, edlib, "")
