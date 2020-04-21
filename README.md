@@ -22,7 +22,7 @@ To install the library so it can easily be loaded by gawk, run `sudo make instal
 After installation, the extension should be loaded through either through the `-ledlib` command line argument or `@load "edlib"` at the start of the script:
 
 ```shell
-awk -ledlib 'BEGIN { print(edlib("ATCG", "ATCCG")) }' # prints '3M1D1M'
+awk -ledlib 'BEGIN { print(edlib("ATCG", "ATCCG")) }' # prints '3=1D1='
 ```
 
 ```shell
@@ -43,12 +43,12 @@ awk '@load "./edlib"; BEGIN { print(edlib("ATCG", "ATCCG")) }'
 AWKLIBPATH=$(pwd) awk -ledlib 'BEGIN { print(edlib("ATCG", "ATCCG")) }'
 ```
 
-The function accepts up to 4 arguments: sequence one, sequence two, alignment method and maximum distance. The alignment method defaults to "NW", and the maximum distance defaults to -1 (unlimited). Here are some examples:
+The function accepts up to 5 arguments: sequence one, sequence two, alignment method, cigar output mode and maximum distance. The alignment method defaults to "NW", the cigar output mode defaults to "EXTENDED" and the maximum distance defaults to -1 (unlimited). Here are some examples:
 
 ```shell
-awk -ledlib 'BEGIN { print(edlib("ATCG", "ATCCGAAAAAA", "HW", 5)) }' # prints '3M1I'
+awk -ledlib 'BEGIN { print(edlib("ATCGG", "ATCCGAAAAAA", "HW", "STANDARD", 5)) }' # prints '3M1I'
 ```
 
 ```shell
-awk -ledlib 'BEGIN { print(edlib("ATCG", "GGGGATCCGAAAAAA", "HW")) }' # prints '3M1I'
+awk -ledlib 'BEGIN { print(edlib("ATCGG", "GGGGATCCGAAAAAA", "HW")) }' # prints '3=1X1='
 ```
