@@ -1,11 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(edlib-awk VERSION 0.9.1)
 
-add_library(edlib-awk SHARED edlib-awk.c)
-
-# Using edlib as a static library from a git submodule
-add_subdirectory(vendor/edlib EXCLUDE_FROM_ALL)
-target_link_libraries(edlib-awk edlib)
+add_library(edlib-awk SHARED edlib-awk.c edlib.cpp)
 
 # Filename must be edlib.so so it can be loaded as @load "edlib"
 set_target_properties(edlib-awk PROPERTIES PREFIX "")

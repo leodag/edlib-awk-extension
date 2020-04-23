@@ -1,3 +1,0 @@
-[submodule "vendor/edlib"]
-	path = vendor/edlib
-	url = https://github.com/martinsos/edlib
