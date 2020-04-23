@@ -19,6 +19,18 @@ static const char *ext_version = "edlib extension: version 0.9.1";
 
 static awk_bool_t (*init_func)(void) = NULL;
 
+// Convenience method, throws a fatal error on failure and receives a string index
+static void really_set_array_element(awk_array_t array, char *index_str, awk_value_t *value) {
+    awk_value_t index;
+    make_const_string(index_str, strlen(index_str), &index);
+
+    if (!set_array_element(array, &index, value)) {
+        fatal(ext_id, "edlib: set_array_element failed");
+    }
+
+    return;
+}
+
 static void edlib_result_into_array(EdlibAlignResult align_result, char *cigar_str, awk_array_t array) {
     int i;
     awk_value_t index;
@@ -26,40 +38,25 @@ static void edlib_result_into_array(EdlibAlignResult align_result, char *cigar_s
     awk_array_t end_locations_array;
     awk_array_t start_locations_array;
 
-    make_const_string("cigar", 5, &index);
     make_malloced_string(cigar_str, strlen(cigar_str), &value);
-    if (!set_array_element(array, &index, &value)) {
-        fatal(ext_id, "edlib: set_array_element failed");
-    }
+    really_set_array_element(array, "cigar", &value);
 
-    make_const_string("edit_distance", 13, &index);
     make_number(align_result.editDistance, &value);
-    if (!set_array_element(array, &index, &value)) {
-        fatal(ext_id, "edlib: set_array_element failed");
-    }
+    really_set_array_element(array, "edit_distance", &value);
 
-    make_const_string("alphabet_length", 15, &index);
     make_number(align_result.alphabetLength, &value);
-    if (!set_array_element(array, &index, &value)) {
-        fatal(ext_id, "edlib: set_array_element failed");
-    }
+    really_set_array_element(array, "alphabet_length", &value);
 
-    make_const_string("end_locations", 13, &index);
     end_locations_array = create_array();
     value.val_type = AWK_ARRAY;
     value.array_cookie = end_locations_array;
-    if (!set_array_element(array, &index, &value)) {
-        fatal(ext_id, "edlib: set_array_element failed");
-    }
+    really_set_array_element(array, "end_locations", &value);
     end_locations_array = value.array_cookie;
 
-    make_const_string("start_locations", 15, &index);
     start_locations_array = create_array();
     value.val_type = AWK_ARRAY;
     value.array_cookie = start_locations_array;
-    if (!set_array_element(array, &index, &value)) {
-        fatal(ext_id, "edlib: set_array_element failed");
-    }
+    really_set_array_element(array, "start_locations", &value);
     start_locations_array = value.array_cookie;
 
     for (i = 0; i < align_result.numLocations; i++) {
