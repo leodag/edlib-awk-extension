@@ -31,7 +31,7 @@ static void really_set_array_element(awk_array_t array, char *index_str, awk_val
     return;
 }
 
-static void edlib_result_into_array(EdlibAlignResult align_result, char *cigar_str, awk_array_t array) {
+static void edlib_align_into_array(EdlibAlignResult align_result, char *cigar_str, awk_array_t array) {
     int i;
     awk_value_t index;
     awk_value_t value;
@@ -80,7 +80,7 @@ static void edlib_result_into_array(EdlibAlignResult align_result, char *cigar_s
     return;
 }
 
-static awk_value_t *do_edlib(int nargs, awk_value_t *return_val, struct awk_ext_func *finfo) {
+static awk_value_t *do_edlib_align(int nargs, awk_value_t *return_val, struct awk_ext_func *finfo) {
     awk_value_t result_val;
     awk_array_t result_array;
 
@@ -102,7 +102,7 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *return_val, struct awk_ext_
 
     if (get_argument(0, AWK_ARRAY, &result_val)) {
         result_array = result_val.array_cookie;
-        if (! clear_array(result_array)) {
+        if (!clear_array(result_array)) {
             update_ERRNO_int(ENOMEM);
             fatal(ext_id, "edlib: clear_array failed");
         }
@@ -183,7 +183,7 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *return_val, struct awk_ext_
     char *cigar_str =
         edlibAlignmentToCigar(align_result.alignment, align_result.alignmentLength, cigar_mode);
 
-    edlib_result_into_array(align_result, cigar_str, result_array);
+    edlib_align_into_array(align_result, cigar_str, result_array);
 
     edlibFreeAlignResult(align_result);
 
@@ -192,7 +192,7 @@ static awk_value_t *do_edlib(int nargs, awk_value_t *return_val, struct awk_ext_
 }
 
 static awk_ext_func_t func_table[] = {
-    { "edlib", do_edlib, 6, 3, awk_false, NULL },
+    { "align", do_edlib_align, 6, 3, awk_false, NULL },
 };
 
-dl_load_func(func_table, edlib, "")
+dl_load_func(func_table, edlib, "edlib")
