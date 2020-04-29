@@ -1,7 +1,5 @@
 @load "edlib"
 
-@namespace "edlib"
-
 function _repeat_times(string, times,     out) {
     for (i = 0; i < times; i++) {
         out = out string;
@@ -9,8 +7,8 @@ function _repeat_times(string, times,     out) {
     return out;
 }
 
-function print_nice_alignment(align_result, query, target,     nice_align) {
-    get_nice_alignment(nice_align, align_result, query, target);
+function edlib_print_nice_alignment(align_result, query, target,     nice_align) {
+    edlib_get_nice_alignment(nice_align, align_result, query, target);
 
     print("T:  " nice_align["target_aligned"] \
         " (" align_result["start_locations"][0] " - "  align_result["end_locations"][0] ")");
@@ -18,7 +16,7 @@ function print_nice_alignment(align_result, query, target,     nice_align) {
     print("Q:  " nice_align["query_aligned"] " (0 - " length(query) - 1 ")");
 }
 
-function get_nice_alignment(nice_align, align_result, query, target, gap_symbol,
+function edlib_get_nice_alignment(nice_align, align_result, query, target, gap_symbol,
                             # locals
                             cigar, fields, num_occurrences, alignment_operation,
                             query_pos, target_pos, query_aln, target_aln, matched_aln,
@@ -28,7 +26,7 @@ function get_nice_alignment(nice_align, align_result, query, target, gap_symbol,
     }
 
     cigar = align_result["cigar"];
-    awk::patsplit(cigar, fields, "[[:digit:]]+[IDM=X]");
+    patsplit(cigar, fields, "[[:digit:]]+[IDM=X]");
 
     query_pos = 1;
     target_pos = align_result["start_locations"][0] + 1;
