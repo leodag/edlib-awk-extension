@@ -192,7 +192,7 @@ static awk_value_t *do_edlib_align(int nargs, awk_value_t *return_val, struct aw
 }
 
 static awk_ext_func_t func_table[] = {
-    { "edlib_align", do_edlib_align, 6, 3, awk_false, NULL },
+    { "edlib", do_edlib_align, 6, 3, awk_false, NULL },
 };
 
 dl_load_func(func_table, edlib, "")
