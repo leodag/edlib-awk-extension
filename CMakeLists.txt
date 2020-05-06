@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(edlib-awk VERSION 0.9.1)
+project(edlib-awk VERSION 1.0.0)
 
 add_library(edlib-awk SHARED edlib-awk.c edlib.cpp)
 
