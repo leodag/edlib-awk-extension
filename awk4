@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+AWKPATH=${AWKPATH:-.:/usr/share/awk}:/home/leodag/awkincludes AWKLIBPATH=${AWKLIBPATH}:/home/leodag/awklibs gawk "$@"
