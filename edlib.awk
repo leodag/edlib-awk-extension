@@ -35,11 +35,13 @@ function edlib_get_nice_alignment(nice_align, align_result, query, target, gap_s
     target_aln = "";
 
     for (i in fields) {
-        num_occurrences = substr(fields[i], 0, length(fields[i]) - 1);
+        # sum 0 converts to number. breaks comparison in _repeat_times if treated as string
+        num_occurrences = substr(fields[i], 0, length(fields[i]) - 1) + 0;
         alignment_operation = substr(fields[i], length(fields[i]), 1);
 
         switch (alignment_operation) {
             case "=":
+            case "M":
                 target_aln = target_aln substr(target, target_pos, num_occurrences);
                 target_pos += num_occurrences;
                 query_aln = query_aln substr(query, query_pos, num_occurrences);
